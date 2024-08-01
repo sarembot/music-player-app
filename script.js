@@ -1,9 +1,29 @@
+const musicContainer = document.querySelector('.music-container');
+const audioContainer = document.querySelector('.audio-container');
+const progress = document.getElementById('progress');
+const title = document.getElementById('title');
+const progressContainer = document.getElementById('progress-container');
+const cover = document.getElementById('cover');
+
+const audio = document.querySelector('audio');
+
 // Songs
-const songs = [
-  document.getElementById('song-one'),
-  document.getElementById('song-two'),
-  document.getElementById('song-three'),
-];
+const songs = ['summer', 'hey', 'ukulele'];
+
+// keep track of song
+let songIndex = 2;
+let currentSong = songs[songIndex];
+
+// load song details
+loadSong();
+
+function loadSong(song = songs[songIndex]) {
+  title.innerText = song.toUpperCase();
+  audio.src = `music/${song}.mp3`;
+  cover.src = `images/${song}.jpg`;
+
+  return audio;
+}
 
 // Buttons
 const playPauseBtn = document.getElementById('play');
@@ -17,66 +37,64 @@ const togglePlayPause = () => {
   playPauseIcon.classList.toggle('fa-pause');
 };
 
+// show song progress
+function updateProgress(e) {
+  const { duration, currentTime } = e.srcElement;
+  const progressPercentage = (currentTime / duration) * 100;
+  progress.style.width = `${progressPercentage}%`;
+}
+
+// set progress
+function setProgress(e) {
+  const width = this.clientWidth;
+  const clickX = e.offsetX;
+  const duration = audio.duration;
+
+  audio.currentTime = (clickX / width) * duration;
+}
+
+//EVENTS
+
 // play / pause
-const playPause = (song) => {
-  playPauseBtn.addEventListener('click', () => {
-    if (playPauseBtn.id === 'pause') {
-      ('click');
-      song.pause();
-      togglePlayPause();
-      document.querySelector('.music-container').classList.toggle('play');
-      playPauseBtn.id = 'play';
-      return;
-    }
+playPauseBtn.addEventListener('click', () => {
+  if (playPauseBtn.id === 'pause') {
+    ('click');
+    audio.pause();
+    togglePlayPause();
+    document.querySelector('.music-container').classList.toggle('play');
+    playPauseBtn.id = 'play';
+    return;
+  }
 
-    if (playPauseBtn.id === 'play') {
-      song.play();
-      togglePlayPause();
-      document.querySelector('.music-container').classList.toggle('play');
-      playPauseBtn.id = 'pause';
-    }
-  });
-};
-
-playPause(songs[0]);
-
-// stop function
-const stop = (song) => {
-  song.pause();
-  song.currentTime = 0;
-};
-
-// next song
-nextBtn.addEventListener('click', () => {
-  if (!songs[0].paused) {
-    stop(songs[0]);
-    playPause(songs[1]);
-    songs[1].play();
-
-    // } else if (!songs[1].paused) {
-    //   stop(songs[1]);
-    //   playPause(songs[2]);
-    // } else {
-    //   stop(songs[2]);
-    //   songs[0].play;
+  if (playPauseBtn.id === 'play') {
+    audio.play();
+    togglePlayPause();
+    document.querySelector('.music-container').classList.toggle('play');
+    playPauseBtn.id = 'pause';
+    return;
   }
 });
 
-// playBtn.addEventListener('click', () => {
-//   trackOne.play();
-//   console.log(playBtn.dataset.playing);
+// next song
+nextBtn.addEventListener('click', () => {
+  if (songIndex === 2) songIndex = 0;
+  else {
+    songIndex += 1;
+  }
+  loadSong().play();
+});
 
-//   if (audioContext.state === 'suspended') {
-//     audioContext.resume();
-//   }
+// previous song
+prevBtn.addEventListener('click', () => {
+  if (songIndex === 0) songIndex = 2;
+  else {
+    songIndex -= 1;
+  }
+  loadSong().play();
+});
 
-//   if (playBtn.dataset.playing === 'false') {
-//     playBtn.dataset.playing = 'true';
-//   }
-// });
+// update time
+audio.addEventListener('timeupdate', updateProgress);
 
-// // const forward = () => {
-// //     nextBtn.addEventListener('click', () => {
-// //         if ()
-// //     })
-// // }
+// click on progress bar
+progressContainer.addEventListener('click', setProgress);
