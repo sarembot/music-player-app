@@ -1,0 +1,1 @@
+Small project for Traversy Media's vanilla JS course. Getting practice working with the Audio API, and I feel like it went pretty good. I spent (wasted) a lot of time on this one trying to do stuff by myself, or just using the MDN, and I think it was pretty beneficial. Onwards!
